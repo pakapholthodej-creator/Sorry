@@ -1,0 +1,190 @@
+-- โหลด Fluent UI Library
+local Fluent = loadstring(game:HttpGet("https://github.com/dawid-scripts/Fluent/releases/latest/download/main.lua"))()
+
+-- สร้างหน้าต่างหลักชื่อ Sowlozz8💩 (โทนสีเขียว)
+local Window = Fluent:CreateWindow({
+    Title = "Sowlozz8💩",
+    SubTitle = "Delta Executor Hub",
+    TabWidth = 160,
+    Size = UDim2.fromOffset(580, 460),
+    Acrylic = true,
+    Theme = "Green",
+    MinimizeKey = Enum.KeyCode.LeftControl -- กด Left Control เพื่อซ่อน/โชว์เมนู
+})
+
+-- ==========================================
+-- ช่องที่ 1: สาย AFK & ยูทิลิตี้ (AFK & Utilities)
+-- ==========================================
+local Tab1 = Window:AddTab({ Title = "สาย AFK", Icon = "coffee" })
+
+-- 1. ลดอาการค้าง/แลค
+Tab1:AddButton({
+    Title = "1. ลดอาการค้าง/แลค (FPS Boost)",
+    Callback = function()
+        for _, v in pairs(game:GetDescendants()) do
+            if v:IsA("BasePart") then v.Material = Enum.Material.SmoothPlastic v.Reflectance = 0
+            elseif v:IsA("Decal") or v:IsA("Texture") then v:Destroy()
+            elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then v.Enabled = false end
+        end
+        game:GetService("Lighting").GlobalShadows = false
+    end
+})
+
+-- 2. ป้องกันโดนเตะ AFK 20 นาที
+local AntiAFK = false
+Tab1:AddToggle("AntiAFK", {
+    Title = "2. ป้องกันโดนเตะ AFK (Anti-AFK)",
+    Default = false,
+    Callback = function(Value) AntiAFK = Value end
+})
+game:GetService("Players").LocalPlayer.Idled:Connect(function()
+    if AntiAFK then
+        game:GetService("VirtualUser"):CaptureController()
+        game:GetService("VirtualUser"):ClickButton2(Vector2.new())
+    end
+end)
+
+-- 3. อมตะเบื้องต้น (Godmode Client)
+Tab1:AddButton({
+    Title = "3. ลบ ForceField / รีเซ็ต Humanoid",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char and char:FindFirstChild("Humanoid") then
+            char.Humanoid.MaxHealth = math.huge
+            char.Humanoid.Health = math.huge
+        end
+    end
+})
+
+-- 4. คัดลอกไอเทมจากมือผู้เล่นอื่น
+Tab1:AddButton({
+    Title = "4. คัดลอก Tool จากผู้เล่นใกล้เคียง",
+    Callback = function() end
+})
+
+-- 5. กระโดดไม่จำกัด (Infinite Jump)
+local InfJump = false
+Tab1:AddToggle("InfJump", {
+    Title = "5. กระโดดไม่จำกัด (Infinite Jump)",
+    Default = false,
+    Callback = function(Value) InfJump = Value end
+})
+game:GetService("UserInputService").JumpRequest:Connect(function()
+    if InfJump then
+        game.Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+    end
+end)
+
+-- 6. Auto Clicker
+local AutoClick = false
+Tab1:AddToggle("AutoClick", {
+    Title = "6. Auto Clicker",
+    Default = false,
+    Callback = function(Value) AutoClick = Value end
+})
+
+-- 7. เล่นแอนิเมชัน
+Tab1:AddButton({ Title = "7. เล่นแอนิเมชันพิเศษ", Callback = function() end })
+
+-- 8. ค้นหาไอเทมตกบนพื้น
+Tab1:AddButton({ Title = "8. ค้นหาไอเทมตกบนพื้น", Callback = function() end })
+
+-- 9. โหลดชุดท่าทาง
+Tab1:AddButton({ Title = "9. โหลดชุดท่าทาง R15", Callback = function() end })
+
+-- 10. ระบบบิน (Fly Mode)
+Tab1:AddButton({
+    Title = "10. เปิดใช้งานระบบบิน (Fly Mode)",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source"))()
+    end
+})
+
+-- ==========================================
+-- ช่องที่ 2: หน้าหลัก (Main)
+-- ==========================================
+local Tab2 = Window:AddTab({ Title = "หน้าหลัก", Icon = "user" })
+
+-- 1. โหมดล่องหน
+Tab2:AddButton({
+    Title = "1. โหมดล่องหน (Invisible)",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        for _, part in pairs(char:GetChildren()) do
+            if part:IsA("BasePart") then part.Transparency = 1 end
+        end
+    end
+})
+
+-- 2. วิ่งเร็ว
+Tab2:AddSlider("WalkSpeed", {
+    Title = "2. วิ่งเร็ว (WalkSpeed)",
+    Default = 16, Min = 16, Max = 300, Rounding = 0,
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.WalkSpeed = Value
+    end
+})
+
+-- 3. กระโดดสูง
+Tab2:AddSlider("JumpPower", {
+    Title = "3. กระโดดสูง (JumpPower)",
+    Default = 50, Min = 50, Max = 500, Rounding = 0,
+    Callback = function(Value)
+        game.Players.LocalPlayer.Character.Humanoid.JumpPower = Value
+    end
+})
+
+-- 4. ท่าเต้นฟรี
+Tab2:AddButton({
+    Title = "4. เปิดเมนูท่าเต้นฟรี (Free Emotes)",
+    Callback = function()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/sys-50/Free-Emotes/main/FreeEmotes.lua"))()
+    end
+})
+
+-- 5. หัวหาย
+Tab2:AddButton({
+    Title = "5. หัวหาย (Headless)",
+    Callback = function()
+        local head = game.Players.LocalPlayer.Character:FindFirstChild("Head")
+        if head then head.Transparency = 1 end
+    end
+})
+
+-- 6-7. ขาหาย
+Tab2:AddButton({
+    Title = "6-7. ซ่อนส่วนขา (Korblox Visual)",
+    Callback = function()
+        local char = game.Players.LocalPlayer.Character
+        if char:FindFirstChild("Right Upper Leg") then char["Right Upper Leg"].Transparency = 1 end
+        if char:FindFirstChild("Left Upper Leg") then char["Left Upper Leg"].Transparency = 1 end
+    end
+})
+
+-- 8. วาร์ปไปหาผู้เล่น
+Tab2:AddButton({ Title = "8. วาร์ปไปหาผู้เล่นในเซิร์ฟเวอร์", Callback = function() end })
+
+-- 9. ระบบ Fling
+Tab2:AddButton({ Title = "9. ระบบ Fling (หมุนชนคนอื่น)", Callback = function() end })
+
+-- 10. เช็คไอเทม
+Tab2:AddButton({ Title = "10. เช็คไอเทมในกระเป๋า", Callback = function() end })
+
+-- ==========================================
+-- ช่องที่ 3: ตั้งค่า (Settings)
+-- ==========================================
+local Tab3 = Window:AddTab({ Title = "ตั้งค่า", Icon = "settings" })
+
+-- 1. เปลี่ยนภาษา UI
+Tab3:AddDropdown("Language", {
+    Title = "1. เปลี่ยนภาษา (Language)",
+    Values = {"ไทย (Thai)", "English", "Khmer (เขมร)"},
+    Default = "ไทย (Thai)",
+    Callback = function(Option)
+        Fluent:Notify({ Title = "Language", Content = "Selected: " .. Option, Duration = 2 })
+    end
+})
+
+-- 2. ปุ่มปิด/ออกจากสคริปต์ 💩
+Tab3:AddButton({
+    Title = "2. ปิดและออกจากสคริปต์ (Exit Script
